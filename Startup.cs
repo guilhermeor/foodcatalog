@@ -32,7 +32,7 @@ namespace FoodCatalog
             });
             services.AddHttpClient<FoodService>(c =>
             {
-                c.BaseAddress = new Uri("https://taco-food-api.herokuapp.com/api/v1/");
+                c.BaseAddress = new Uri(Configuration["TacoFoodAddress"]);
             });
             services.AddMemoryCache();
             services.AddMediatR(GetType().Assembly);
@@ -55,7 +55,7 @@ namespace FoodCatalog
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });            
+            });
         }
     }
 }

@@ -12,7 +12,9 @@ namespace FoodCatalog.Services
 {
     public class AttributeBase
     {
+        [JsonPropertyName("qty")]
         public string Qty { get; set; }
+        [JsonPropertyName("unit")]
         public string Unit { get; set; }
     }
     public class FoodRequest : IRequest<ObjectResult>
@@ -39,8 +41,11 @@ namespace FoodCatalog.Services
         public AttributeBase Cholesterol { get; set; }
         public AttributeBase Carbohydrate { get; set; }
         public AttributeBase Fiber { get; set; }
+        [JsonPropertyName("ashes")]
         public AttributeBase Ashes { get; set; }
+        [JsonPropertyName("calcium")]
         public AttributeBase Calcium { get; set; }
+        [JsonPropertyName("magnesium")]
         public AttributeBase Magnesium { get; set; }
         public AttributeBase Phosphorus { get; set; }
         public AttributeBase Iron { get; set; }
