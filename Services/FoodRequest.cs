@@ -12,9 +12,9 @@ namespace FoodCatalog.Services
 {
     public class AttributeBase
     {
-        [JsonPropertyName("qty")]
+       // [JsonPropertyName("qty")]
         public string Qty { get; set; }
-        [JsonPropertyName("unit")]
+        //[JsonPropertyName("unit")]
         public string Unit { get; set; }
     }
     public class FoodRequest : IRequest<ObjectResult>

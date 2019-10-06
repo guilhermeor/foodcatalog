@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Compression;
+using System.Net.Http;
+using System.Text.Json;
 using FoodCatalog.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,10 +17,7 @@ namespace FoodCatalog
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -39,7 +40,7 @@ namespace FoodCatalog
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMemoryCache cache, IHttpClientFactory httpClientFactory)
         {
             if (env.IsDevelopment())
             {
@@ -56,6 +57,16 @@ namespace FoodCatalog
             {
                 endpoints.MapControllers();
             });
+
+            AddFoodData(cache, httpClientFactory);
+        }
+
+        private async void AddFoodData(IMemoryCache cache, IHttpClientFactory httpClientFactory)
+        {
+            using var client = httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{ Configuration["TacoFoodAddress"]}food");
+            var foods = await JsonSerializer.DeserializeAsync<IEnumerable<FoodRequest>>(await response.Content.ReadAsStreamAsync());
+            cache.Set("foods", foods);
         }
     }
 }
